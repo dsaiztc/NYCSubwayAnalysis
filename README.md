@@ -2,7 +2,7 @@
 
 > This project has been developed in order to pursue the [Data Analyst Nanodegree](https://www.udacity.com/course/data-analyst-nanodegree--nd002) offered by Udacity. Specifically, the project aims to use the knowledges acquired in the first course of this Nanodegree: [Intro to Data Science](https://www.udacity.com/course/ud359-nd). 
 > 
-> The *Short Questions* answers about the data analysis can be found [here](./ShortQuestions.md).
+> The *Short Questions* answers about the data analysis can be found [here](./ShortQuestions.html).
 
 ## 1 Introduction
 
