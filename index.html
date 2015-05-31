@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>NYCSubwayAnalysis by dsaiztc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">NYCSubwayAnalysis</h1>
+      <h2 class="project-tagline">Analyzing the NYC Subway Dataset</h2>
+      <a href="https://github.com/dsaiztc/NYCSubwayAnalysis" class="btn">View on GitHub</a>
+      <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="analyzing-the-nyc-subway-dataset" class="anchor" href="#analyzing-the-nyc-subway-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analyzing the NYC Subway Dataset</h1>
+
+<blockquote>
+<p>This project has been developed in order to pursue the <a href="https://www.udacity.com/course/data-analyst-nanodegree--nd002">Data Analyst Nanodegree</a> offered by Udacity. Specifically, the project aims to use the knowledges acquired in the first course of this Nanodegree: <a href="https://www.udacity.com/course/ud359-nd">Intro to Data Science</a>. </p>
+
+<p>The <em>Short Questions</em> answers about the data analysis can be found <a href="./ShortQuestions.md">here</a>.</p>
+</blockquote>
+
+<h2>
+<a id="1-introduction" class="anchor" href="#1-introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 Introduction</h2>
+
+<p>The aim of this project is to evaluate <strong>whether or not more people ride the subway in New York City when it is raining than when it is not raining</strong>, that is, if there is a significant difference between the riderships on rainy days and non-rainy days. To reach this goal, we are going to analyze the <a href="https://www.dropbox.com/s/meyki2wl9xfa7yk/turnstile_data_master_with_weather.csv">NYC Subway data set</a> provided by Udacity (also available <a href="./notebooks/improved-dataset/turnstile_weather_v2.csv">here</a>). This data set corresponds to the month of May 2011 and can be accessed through the main source in the web page of the MTA, in the <a href="http://web.mta.info/developers/index.html">Developer Resources section</a>.</p>
+
+<h2>
+<a id="2-statistical-test" class="anchor" href="#2-statistical-test" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 Statistical Test</h2>
+
+<h3>
+<a id="21-analyzing-the-data" class="anchor" href="#21-analyzing-the-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Analyzing the data</h3>
+
+<p>The given data comes in a <a href="http://en.wikipedia.org/wiki/Comma-separated_values">csv</a> format, consisting of a numerical index (integer) and a series of columns representing different measurements of the MTA system. These columns and their associated values are described <a href="./notebooks/improved-dataset/turnstile-weather-variables.pdf">here</a>.</p>
+
+<p>The variable that we are analyzing is <code>ENTRIESn_hourly</code> which is not a measure of the <em>entries per hour</em>, instead it measures the number of entries between readings. That gap of time could be 4, 8, 12, 16 or even 20 hours. However, the majority of measures have been made with a gap of time of 4 hours (96%), then with a gap of 8 hours (3,7%) and so on. You can reach more info on the <a href="./notebooks/HoursDifference.ipynb">corresponding Notebook</a>.</p>
+
+<p>We want to analyze wether or not the entries varies depending on if it is raining or not. We can plot the distribution of the entries per hour, differentiating for both situations:</p>
+
+<p><img src="./images/figure1.png" alt="Figure 1"></p>
+
+<p>In that image we can see that both distributions are very similar, where the main difference came across values below 1.000 entries. Note that the image has been truncated to show only values of entries below 10.000. It also seems that exists some problems while plotting the legend with <code>ggplot</code>. In addition to that figure, we can take a look at some statistic parameters of both distributions:</p>
+
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">Rain</th>
+<th align="left">No Rain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Count</td>
+<td align="left">9585</td>
+<td align="left">33064</td>
+</tr>
+<tr>
+<td align="left"><strong>Mean</strong></td>
+<td align="left"><strong>2028.20</strong></td>
+<td align="left"><strong>1845.54</strong></td>
+</tr>
+<tr>
+<td align="left">std</td>
+<td align="left">3189.43</td>
+<td align="left">2878.77</td>
+</tr>
+<tr>
+<td align="left">min</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">25%</td>
+<td align="left">295</td>
+<td align="left">269</td>
+</tr>
+<tr>
+<td align="left">50%</td>
+<td align="left">939</td>
+<td align="left">893</td>
+</tr>
+<tr>
+<td align="left">75%</td>
+<td align="left">2424</td>
+<td align="left">2197</td>
+</tr>
+<tr>
+<td align="left">max</td>
+<td align="left">32289</td>
+<td align="left">32814</td>
+</tr>
+</tbody>
+</table>
+
+<p>This data we are analyzing corresponds to the aggregate data (from all remote units). As we can see in the table below, there is a difference in the mean on both populations, so is our task to determine if they are <strong>significantly</strong> different. Regarding the previous figure, we could conclude that <strong>the <em>red</em> curve corresponds to data when it is not raining</strong> whereas <strong>the <em>blue</em> curve correspond with data collected when it is raining</strong>. Note that this <em>rain/no-rain tag</em> that we have added to our data corresponds to when it had been raining within a day, so it could be possible that some data points are <em>tagged</em> with a <em>rain</em> when it was not raining at that specific moment in time (but it rained on that day).</p>
+
+<h3>
+<a id="22-statistical-significance" class="anchor" href="#22-statistical-significance" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 Statistical significance</h3>
+
+<p>If we want to know if there is a significant difference between the two distributions, that is, if people use the train more often when it is raining than when it is not, we need to make a hypothesis testing with a <strong>Mann-Whitney U test</strong>. This kind of test will allow us to determine whether or not there is a significance difference between the two populations, which is the same as saying that the means are different. In this case we can’t conduct a t-test cause the distributions are not normal, so we use a non-parametric test like Mann-Whitney U test. With this premise in mind we can construct our null and alternative hypothesis to evaluate:</p>
+
+<p><img src="./images/eq1.png" alt="Equation 1"></p>
+
+<p>Therefore, our test will be <strong>directional (one-tailed)</strong>, since we want to prove what our intuition tell us, that when it is raining more people will take the subway. Also we will select a significance level of <strong>alpha = 0.01</strong> instead of a higher value like 0.05 because the one-tailed test is less conservative (we are more likely to reject the null when it is true).</p>
+
+<p>Given these parameters, we conduct the Mann-Whitney U test and we get a <strong>p-value = 2.74e-6</strong>, which is clearly lower than the critical value, so we would <strong>reject the null hypothesis</strong>. That means that <strong>more people ride the subway in New York City when it is raining than it is not raining</strong> (in other words, it is not likely due to chance to get this difference between the two data).</p>
+
+<p><strong>NOTE:</strong> The associated IPython notebook could be found <a href="./notebooks/StatisticalTest.ipynb">here</a>. Here we can also see that if we split the data differentiating between different stations and we conduct the statistical test for each of them, we will not reject the null for each of the station, indeed, we would only say that in three of the stations significantly more people ride the subway when it is raining.</p>
+
+<h2>
+<a id="3-linear-regression" class="anchor" href="#3-linear-regression" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 Linear Regression</h2>
+
+<p>In order to get predictions about how many people will ride the subway depending on weather conditions and time we will build a regression model. That regression model will be based on the given data explained above, using the characteristics that best lead to a good predicted values.</p>
+
+<p>In all analysis that I have made there is always a huge dispersion in data caused by the difference between stations. We have stations with an average ridership much higher than the rest so our model should not include all the data for making a predicting model. Another option we have is to create dummy variables for different stations, so that our regression would calculate a higher theta value for those stations with more people riding the subway.</p>
+
+<h3>
+<a id="31-aggregated-data-regression-model" class="anchor" href="#31-aggregated-data-regression-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Aggregated-data regression model</h3>
+
+<p><strong>3.1.1 Algorithm</strong></p>
+
+<p>In order to compute the regression model (theta coefficients) for the aggregated data (without differentiating between stations) the chosen method is <em>OLS</em>. However, <em>Gradient Descent</em> has also been used for comparing purposes. </p>
+
+<p>The reason of choosing <em>OLS</em> as the main method is that it gives a close solution of the minimum of the cost function, whereas <em>Gradient Descent</em> solution is not as accurate and could give us a <em>local minimum</em> (not the <em>global</em> one). In this case the amount of data is not a problem for <em>OLS</em>, so we do not need the inherit speed of <em>Gradient Descent</em> in this case.</p>
+
+<p><strong>3.1.2 Variables</strong></p>
+
+<p>The included variables as one-order terms into the regression model are the following: <code>hour</code>, <code>day_week</code>, <code>weekday</code>, <code>fog</code>, <code>precipi</code>, <code>pressurei</code>, <code>rain</code>, <code>tempi</code> and <code>wspdi</code>. Other high-grade terms have been also included to the regression model (from <em>order 2</em> up to <em>order 10</em> depending on the specific characteristic and the results that it provides in the final model). This <em>high-order terms</em> include the variables: <code>hour</code>, <code>precipi</code>, <code>DAYn</code>, <code>day_week</code>, <code>pressurei</code>, <code>tempi</code> and <code>wspdi</code> (where <code>DAYn</code> is the day of the month).</p>
+
+<p>Some <em>dummy variables</em> have been also included, separating <em>data points</em> with different values of <code>UNIT</code> and <code>conds</code>.</p>
+
+<p>In a first approach, the variables that intuitively have a direct relation with the number of people that ride the subways have been chosen, such as the weather variables (the worst the weather, the more people will ride the subway) and other time constraints variables (there has to be <em>peak</em> hours and there could be a difference between weekday and non-weekday days). </p>
+
+<p>Based on this intuition, an analysis of the influence of the different variables on a regression model and its Coefficient of Determination could be made to visualize those relationships, getting a more specific vision about how each variable influences the number of entries, so that it could be advantageous adding <em>dummy</em> variables or <em>high-order terms</em> in the regression model (for variables that clearly does not follow a linear curve).</p>
+
+<p>In the case of the <em>dummy</em> variables, there is a high difference between the passengers for different stations, which produces a high dispersion in the <em>scatter plot</em> if we do not desegregate this data for different stations (or units). The reason to add another <em>dummy</em> variable for <code>conds</code> is based on the analysis of the R2 value obtained (which is better with the variable that without it).</p>
+
+<p>There are three different Notebooks that have been used for the variable analysis, which can be reached <a href="./notebooks/reg1.ipynb">here</a>, <a href="./notebooks/reg2.ipynb">here</a> and <a href="./notebooks/reg3.ipynb">here</a>.</p>
+
+<p><strong>3.1.3 Regression Model</strong></p>
+
+<p>The result of applying <em>OLS</em> is a <strong>Coefficient of Determination</strong> parameter of <strong>0.5028</strong>. This R2 values says that <strong>50,28 %</strong> of variability of the <code>ENTRIESn_hourly</code> parameter could be determined with the different variables that has been used in the regression model (weather and time).</p>
+
+<p>To quantify if this model could be appropriate for predicting the ridership we should take a look at both variables for entries, the actual and the predicted. In the following image we could see a <em>scatter plot</em> with the <em>OLS</em> result (blue) and another with the <em>Gradient Descent</em> result (red). There is also a LOESS curve and a LS curve (with a lighter color). A black line is also added with the reference 1:1 line that the data should follow.</p>
+
+<p><img src="./images/entries_estimated.png" alt="Original vs Predicted ENTRIESn_hourly"></p>
+
+<p>So given the R2 parameters we could say that is a good estimation, whereas if we take a look to the above curve, the predictions are not very close to the reference line for higher values of <code>ENTRIESn_hourly</code>, the regression model has made a good adjustment for lower values (where most of them are concentrated as well).</p>
+
+<h3>
+<a id="32-regression-model-for-each-station" class="anchor" href="#32-regression-model-for-each-station" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Regression model for each station</h3>
+
+<p>There is a high difference between riderships for different stations. This difference could be appreciated in the <em>scatter plot</em> of the <em>entries per reading</em> where we have a high number of <em>dispersion</em> and also a huge amount of <em>outliers</em>. The quickest way to visualize this is <em>plotting</em> the entries on each station:</p>
+
+<p><img src="./images/figure3.png" alt="Mean and median “entries between readings” for different stations"></p>
+
+<p>In the above figure we can see the mean (red) and median (blue) values for the different stations. As we can see, this huge difference between stations will create a regression model with the aggregated data that may not be as precise and accurate as it could be if we split the data for the different stations and create a model for each one of them.</p>
+
+<p>In order to support this theory of the station-splitting-analysis in someway, different stations have been analyzed and a regression model has been created for each of them individually. The result could be viewed in the following image:</p>
+
+<p><img src="./images/stations.png" alt="Regression model calculated per station"></p>
+
+<p>In this case we have the 4 stations with higher mean entries (for making the comparison easier). The Coefficient of Determination has been also included in the tittle of each of them. The presented curves correspond to the desired value (black), the LOESS curve (red) and the LS curve (pink) with the 95% confidence interval. In this case the regression model created is much more accurate than before, reaching a R2 value of 0.8948 for the <strong>59 ST-COLUMBUS station</strong>, which means that the <strong>89,48%</strong> of the variability in the entries for this station could be explained by external variables like the weather and the time.</p>
+
+<p>In this case we have to take care because splitting the data also means that we will have less samples for each group, so there could be a case in which we do not have enough information to build a regression model (or the model would be wrong, for example if for one station we do not have data for rainy days).</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/dsaiztc/NYCSubwayAnalysis">NYCSubwayAnalysis</a> is maintained by <a href="https://github.com/dsaiztc">dsaiztc</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
