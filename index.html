@@ -2,7 +2,7 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Analyzing the NYC Subway Dataset</title>
+    <title>NYCSubwayAnalysis by dsaiztc</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -25,7 +25,7 @@
 <blockquote>
 <p>This project has been developed in order to pursue the <a href="https://www.udacity.com/course/data-analyst-nanodegree--nd002">Data Analyst Nanodegree</a> offered by Udacity. Specifically, the project aims to use the knowledges acquired in the first course of this Nanodegree: <a href="https://www.udacity.com/course/ud359-nd">Intro to Data Science</a>. </p>
 
-<p>The <em>Short Questions</em> answers about the data analysis can be found <a href="./ShortQuestions.html">here</a>.</p>
+<p>The <em>Short Questions</em> answers about the data analysis can be found <a href="./ShortQuestions.md">here</a>.</p>
 </blockquote>
 
 <h2>
@@ -43,11 +43,11 @@
 
 <p>The variable that we are analyzing is <code>ENTRIESn_hourly</code> which is not a measure of the <em>entries per hour</em>, instead it measures the number of entries between readings. That gap of time could be 4, 8, 12, 16 or even 20 hours. However, the majority of measures have been made with a gap of time of 4 hours (96%), then with a gap of 8 hours (3,7%) and so on. You can reach more info on the <a href="./notebooks/HoursDifference.ipynb">corresponding Notebook</a>.</p>
 
-<p>We want to analyze wether or not the entries varies depending on if it is raining or not. We can plot the distribution of the entries per hour, differentiating for both situations:</p>
+<p>We want to analyze wether or not the entries varies depending on if it is raining or not. We can plot an histogram of the entries per hour, differentiating for both situations:</p>
 
-<p><img src="./images/figure1.png" alt="Figure 1"></p>
+<p><img src="./images/entries_histogram.png" alt="Figure 1"></p>
 
-<p>In that image we can see that both distributions are very similar, where the main difference came across values below 1.000 entries. Note that the image has been truncated to show only values of entries below 10.000. It also seems that exists some problems while plotting the legend with <code>ggplot</code>. In addition to that figure, we can take a look at some statistic parameters of both distributions:</p>
+<p>As we can see in the figure , there is much more entries for the non-rainy days, which means that most of the data correspond to non-rainy days. Note that the x-axis has been truncated up to 15.000 <em>entries per reading</em> to allow more clarity in the visualization (we have values up to 32.814 entries). In addition to that figure, we can take a look at some statistic parameters of both distributions:</p>
 
 <table>
 <thead>
@@ -101,7 +101,17 @@
 </tbody>
 </table>
 
-<p>This data we are analyzing corresponds to the aggregate data (from all remote units). As we can see in the table below, there is a difference in the mean on both populations, so is our task to determine if they are <strong>significantly</strong> different. Regarding the previous figure, we could conclude that <strong>the <em>red</em> curve corresponds to data when it is not raining</strong> whereas <strong>the <em>blue</em> curve correspond with data collected when it is raining</strong>. Note that this <em>rain/no-rain tag</em> that we have added to our data corresponds to when it had been raining within a day, so it could be possible that some data points are <em>tagged</em> with a <em>rain</em> when it was not raining at that specific moment in time (but it rained on that day).</p>
+<p>This data we are analyzing corresponds to the aggregate data (from all remote units). As we can see in the table below, there is a difference in the mean on both populations, so is our task to determine if they are <strong>significantly</strong> different. Note that this <em>rain/no-rain tag</em> that we have added to our data corresponds to when it had been raining within a day, so it could be possible that some data points are <em>tagged</em> with a <em>rain</em> when it was not raining at that specific moment in time (but it rained on that day).</p>
+
+<p>Just for having a big picture of the overall behavior we could analyze the ridership for the hole month, including the measure of <em>mean</em> and <em>median</em> for each day and an encoding of the amount of precipitations:</p>
+
+<p><img src="./images/figure2.png" alt="Entries per reading vs Day of week"></p>
+
+<p>That blue line also allows us not only to view the average <code>ENTRIESn_hourly</code> but also the difference between the different days of the week. Starting the month on Sunday, we see that in the weekends the average use of the subway is considerably less, reaching the minimum of the week on sunday.</p>
+
+<p>The green line tells us almost the same information that the blue one. However, the difference between the median and the mean reflects the high number of <em>outliers</em> among all the data. Those outliers can also be viewed in the orange <em>scatter plot</em>. The high dispersion of the data and its high number of outliers says that maybe different stations have a very different average passengers (the intuition also says the same). We only have to take a look to the <em>mean</em> curve to notice the power of the <em>outliers</em> here.</p>
+
+<p>Due to the fact that we have analyzed the difference on ridership when it is raining I have also added the information of the amount of precipitations in inches. By this way we have the information about what days had been raining and also the amount of precipitations.</p>
 
 <h3>
 <a id="22-statistical-significance" class="anchor" href="#22-statistical-significance" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 Statistical significance</h3>
@@ -110,11 +120,11 @@
 
 <p><img src="./images/eq1.png" alt="Equation 1"></p>
 
-<p>Therefore, our test will be <strong>directional (one-tailed)</strong>, since we want to prove what our intuition tell us, that when it is raining more people will take the subway. Also we will select a significance level of <strong>alpha = 0.01</strong> instead of a higher value like 0.05 because the one-tailed test is less conservative (we are more likely to reject the null when it is true).</p>
+<p>Therefore, our test will be <strong>non-directional (two-tailed)</strong>, since we want to prove what our intuition tell us, that when it is raining more people will take the subway (we cannot assume in advance -before we collect the data- that rain will not be associated with lower ridership). Also we will select a significance level of <strong>alpha = 0.05</strong>.</p>
 
-<p>Given these parameters, we conduct the Mann-Whitney U test and we get a <strong>p-value = 2.74e-6</strong>, which is clearly lower than the critical value, so we would <strong>reject the null hypothesis</strong>. That means that <strong>more people ride the subway in New York City when it is raining than it is not raining</strong> (in other words, it is not likely due to chance to get this difference between the two data).</p>
+<p>Given these parameters, we conduct the Mann-Whitney U test and we get a <strong>p-value = 5.48e-06</strong>, which is clearly lower than the critical value, so we would <strong>reject the null hypothesis</strong>. That means that <strong>more people ride the subway in New York City when it is raining than it is not raining</strong> (in other words, it is not likely due to chance to get this difference between the two data).</p>
 
-<p><strong>NOTE:</strong> The associated IPython notebook could be found <a href="./notebooks/StatisticalTest.ipynb">here</a>. Here we can also see that if we split the data differentiating between different stations and we conduct the statistical test for each of them, we will not reject the null for each of the station, indeed, we would only say that in three of the stations significantly more people ride the subway when it is raining.</p>
+<p><strong>NOTE:</strong> The associated IPython notebook could be found <a href="./notebooks/StatisticalTest.ipynb">here</a>. Here we can also see that if we split the data differentiating between different stations and we conduct the statistical test for each of them, we will not reject the null for each of the station, indeed, we would only say that in one of the stations significantly more people ride the subway when it is raining.</p>
 
 <h2>
 <a id="3-linear-regression" class="anchor" href="#3-linear-regression" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 Linear Regression</h2>
@@ -148,13 +158,13 @@
 
 <p><strong>3.1.3 Regression Model</strong></p>
 
-<p>The result of applying <em>OLS</em> is a <strong>Coefficient of Determination</strong> parameter of <strong>0.5028</strong>. This R2 values says that <strong>50,28 %</strong> of variability of the <code>ENTRIESn_hourly</code> parameter could be determined with the different variables that has been used in the regression model (weather and time).</p>
+<p>The result of applying <em>OLS</em> is a <strong>Coefficient of Determination</strong> parameter of <strong>0.5513</strong>. This R2 values says that <strong>55.13 %</strong> of variability of the <code>ENTRIESn_hourly</code> parameter could be determined with the different variables that has been used in the regression model (weather and time).</p>
 
-<p>To quantify if this model could be appropriate for predicting the ridership we should take a look at both variables for entries, the actual and the predicted. In the following image we could see a <em>scatter plot</em> with the <em>OLS</em> result (blue) and another with the <em>Gradient Descent</em> result (red). There is also a LOESS curve and a LS curve (with a lighter color). A black line is also added with the reference 1:1 line that the data should follow.</p>
+<p>To quantify if this model could be appropriate for predicting the ridership we should take a look at the residuals to see whether or not they are distributed normally, in which case our model would be a great model, or they do not follow a normal distribution and then we have a poor regression model. In the following figure we can see both the histogram and the probability plot of the residuals (actual values - predicted values) for our regression model.</p>
 
-<p><img src="./images/entries_estimated.png" alt="Original vs Predicted ENTRIESn_hourly"></p>
+<p><img src="./images/residuals_analysis.png" alt="Original vs Predicted ENTRIESn_hourly"></p>
 
-<p>So given the R2 parameters we could say that is a good estimation, whereas if we take a look to the above curve, the predictions are not very close to the reference line for higher values of <code>ENTRIESn_hourly</code>, the regression model has made a good adjustment for lower values (where most of them are concentrated as well).</p>
+<p>So given the R2 parameters we could say that is a good estimation, whereas if we take a look to the above figures we would not say the same. We can see that the histogram of the residuals has long tails (specially the right tail) and this effect can also be viewed in the probability plot, that tells us that the distribution is clearly not-normal. The presence of high residuals tells us that there is a considerable quantity of values for <em>actual values</em> that our model is not able to reproduce, giving those high values of residuals that can be viewed in both tails of the histogram and also in the points that move away the straight red line in the <em>probability plot</em>.</p>
 
 <h3>
 <a id="32-regression-model-for-each-station" class="anchor" href="#32-regression-model-for-each-station" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Regression model for each station</h3>
@@ -163,13 +173,13 @@
 
 <p><img src="./images/figure3.png" alt="Mean and median “entries between readings” for different stations"></p>
 
-<p>In the above figure we can see the mean (red) and median (blue) values for the different stations. As we can see, this huge difference between stations will create a regression model with the aggregated data that may not be as precise and accurate as it could be if we split the data for the different stations and create a model for each one of them.</p>
+<p>In the above figure we can see the mean and median values for the different stations. As we can see, this huge difference between stations will create a regression model with the aggregated data that may not be as precise and accurate as it could be if we split the data for the different stations and create a model for each one of them.</p>
 
 <p>In order to support this theory of the station-splitting-analysis in someway, different stations have been analyzed and a regression model has been created for each of them individually. The result could be viewed in the following image:</p>
 
-<p><img src="./images/stations.png" alt="Regression model calculated per station"></p>
+<p><img src="./images/residuals_analysis_stations.png" alt="Regression model calculated per station"></p>
 
-<p>In this case we have the 4 stations with higher mean entries (for making the comparison easier). The Coefficient of Determination has been also included in the tittle of each of them. The presented curves correspond to the desired value (black), the LOESS curve (red) and the LS curve (pink) with the 95% confidence interval. In this case the regression model created is much more accurate than before, reaching a R2 value of 0.8948 for the <strong>59 ST-COLUMBUS station</strong>, which means that the <strong>89,48%</strong> of the variability in the entries for this station could be explained by external variables like the weather and the time.</p>
+<p>n this case I have chosen the 3 stations with higher mean entries (for making the comparison easier). The presented curves correspond to the same pattern I used to discuss the regression model for the aggregated data, that is, an histogram and a probability plot of the residuals. In this case the regression model created is much more accurate than before, reaching a R2 value of 0.8948 for the <strong>59 ST-COLUMBUS</strong> station, which means that the <strong>89,48%</strong> of the variability in the entries for this station could be explained by external variables like the weather and the time.</p>
 
 <p>In this case we have to take care because splitting the data also means that we will have less samples for each group, so there could be a case in which we do not have enough information to build a regression model (or the model would be wrong, for example if for one station we do not have data for rainy days).</p>
 
