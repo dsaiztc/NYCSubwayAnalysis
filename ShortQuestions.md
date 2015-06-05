@@ -194,6 +194,6 @@ Another analysis we could do about the residuals is through the visualization ca
 
 ![Residual Plot](./images/residual_plot.png)
 
-In this case I have plotted first the model with the aggregated data and the the correspondent models for the stations analyzed before. Here we can also see the difference between the first *general* model and the *individual* models. In the first case we have a non-constant variance and the model cannot fit the data because of the high non-linearity and the huge amount of outliers. 
+In this case I have plotted first the model with the aggregated data and the the correspondent models for the stations analyzed before. Here we can also see the difference between the first *general* model and the *individual* models. In the first case we have a non-constant variance and the model cannot fit the data because of the high non-linearity and the huge amount of outliers \[3] \[4]. 
 
 As we intuitively state before, the difference between the riderships between different stations make almost impossible to generate a regression model that fits to all of them (even if we add the station parameters as a *dummy* variable), so it would be a wise option to create a separate model for each of the stations.
