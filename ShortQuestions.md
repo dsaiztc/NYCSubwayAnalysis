@@ -4,6 +4,8 @@
 
 - \[1] [OLS vs Gradient Descent](http://stackoverflow.com/questions/18191890/why-gradient-descent-when-we-can-solve-linear-regression-analytically)
 - \[2] [Are the model residuals well-behaved?](http://www.itl.nist.gov/div898/handbook/pri/section2/pri24.htm)
+- \[3] [Interpreting residual plots to improve your regression](http://docs.statwing.com/interpreting-residual-plots-to-improve-your-regression/)
+- \[4] [Interpret the key results for simple regression](http://support.minitab.com/en-us/minitab-express/1/help-and-how-to/modeling-statistics/regression/how-to/simple-regression/interpret-the-results/key-results/)
 
 
 ## Section 1. Statistical Test
@@ -90,7 +92,7 @@ To give a response about the viability of using this model for predicting the ri
 
 ![Analysis of residuals](./images/residuals_analysis.png)
 
-So given the R2 parameters we could say that is a good estimation, whereas if we take a look to the above figures we would not say the same. We can see that the histogram of the residuals has long tails (specially the right tail) and this effect can also be viewed in the probability plot, that tells us that the distribution is clearly not-normal. The presence of high residuals tells us that there is a considerable quantity of values for *actual values* that our model is not able to reproduce, giving those high values of residuals that can be viewed in both tails of the histogram and also in the points that move away the straight red line in the *probability plot*.
+So given the R2 parameters we could say that is a good estimation, whereas if we take a look to the above figures we would not say the same. We can see that the histogram of the residuals has long tails (specially the right tail) and this effect can also be viewed in the probability plot, that tells us that the distribution is clearly not-normal. The presence of high residuals tells us that there is a considerable quantity of values for *actual values* that our model is not able to reproduce, giving those high values of residuals that can be viewed in both tails of the histogram and also in the points that move away the straight red line in the *probability plot* and make that *S shape*.
 
 ## Section 3. Visualization
 
@@ -168,4 +170,30 @@ Just to support my theory of the station-splitting-analysis in someway, I have a
 
 In this case I have chosen the 3 stations with higher mean entries (for making the comparison easier). The presented curves correspond to the same pattern I used to discuss the regression model in 2.6, that is, an histogram and a probability plot of the residuals. In this case the regression model created is much more accurate than before, reaching a R2 value of 0.8948 for the *59 ST-COLUMBUS* station, which means that the *89,48%* of the variability in the entries for this station could be explained by external variables like the weather and the time.
 
+|                                  | 59 ST-COLUMBUS  | 42 ST-GRD CNTRL | MAIN ST         | 
+| -------------------------------- | --------------- | --------------- | --------------- | 
+| **Coefficient of Determination** | 0.8948 (89.48%) | 0.8152 (81.52%) | 0.7828 (78.28%) | 
+
 In this case we have to take care because splitting the data also means that we will have less samples for each group, so there could be a case in which we do not have enough information to build a regression model (or the model would be wrong, for example if for one station we do not have data for rainy days).
+
+We could also keep digging on this analysis by plotting the residual per data point. In the image below we can see different plots for different range of values: 
+
+![Residual per data point](./images/f_residuals_total1.png)
+
+In each column we have different visualizations: a *scatter plot*, a *line plot* and then a combination of both. In the case of the first column I created the plot with a low alpha value to help visualize where the points concentrate more. I have also chosen different ranges to visualize on each row, with all the data points in the first row, ending with the range from 1.200 to 1.300 data points. Note that the residuals have been standardized (or semi-studentized).
+
+In these graphics we can see that there is a pattern in the evolution of the residuals (mainly in the 4th row), so that may indicate that residuals near each other may be correlated, and thus, not independent. As we have discuss before, the residuals should ideally fall randomly around the center (following a normal distribution). So we could conclude that the model we could not reach the non-linearity that is inherit at this variables through our regression model.
+
+If we make the same analysis for some of the individual regression model created for each station we can see that the plots look more like a randomly generated points, that is, the residuals are more close to the random distribution (but we already knew that for our analysis before):
+
+![Residual per Data Point (for different stations)](./images/f_residuals_station1.png)
+
+So in this case the generated regression model fits better the variables and make more accurate predictions.
+
+Another analysis we could do about the residuals is through the visualization called *the residual plot*. In this plot we have the predicted values on the x-axis and the residuals on the y-axis (standardized residuals in this case), so each point is a measure of entries, where the prediction made by the regression model is on the x-axis, and the accuracy of the prediction is on the y-axis. The distance from the line at 0 is how bad the prediction was for that value.
+
+![Residual Plot](./images/residual_plot.png)
+
+In this case I have plotted first the model with the aggregated data and the the correspondent models for the stations analyzed before. Here we can also see the difference between the first *general* model and the *individual* models. In the first case we have a non-constant variance and the model cannot fit the data because of the high non-linearity and the huge amount of outliers. 
+
+As we intuitively state before, the difference between the riderships between different stations make almost impossible to generate a regression model that fits to all of them (even if we add the station parameters as a *dummy* variable), so it would be a wise option to create a separate model for each of the stations.
