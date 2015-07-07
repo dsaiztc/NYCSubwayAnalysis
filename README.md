@@ -107,7 +107,7 @@ In order to support this theory of the station-splitting-analysis in someway, di
 
 ![Regression model calculated per station](./images/residuals_analysis_stations.png)
 
-n this case I have chosen the 3 stations with higher mean entries (for making the comparison easier). The presented curves correspond to the same pattern I used to discuss the regression model for the aggregated data, that is, an histogram and a probability plot of the residuals. In this case the regression model created is much more accurate than before, reaching a R2 value of 0.8948 for the **59 ST-COLUMBUS** station, which means that the **89,48%** of the variability in the entries for this station could be explained by external variables like the weather and the time.
+I have chosen the 3 stations with higher mean entries (for making the comparison easier). The presented curves correspond to the same pattern I used to discuss the regression model for the aggregated data, that is, an histogram and a probability plot of the residuals. In this case the regression model created is much more accurate than before, reaching a R2 value of 0.8948 for the **59 ST-COLUMBUS** station, which means that the **89,48%** of the variability in the entries for this station could be explained by external variables like the weather and the time.
 
 In this case we have to take care because splitting the data also means that we will have less samples for each group, so there could be a case in which we do not have enough information to build a regression model (or the model would be wrong, for example if for one station we do not have data for rainy days).
 
