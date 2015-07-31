@@ -41,7 +41,7 @@
 
 <p>The given data comes in a <a href="http://en.wikipedia.org/wiki/Comma-separated_values">csv</a> format, consisting of a numerical index (integer) and a series of columns representing different measurements of the MTA system. These columns and their associated values are described <a href="./notebooks/improved-dataset/turnstile-weather-variables.pdf">here</a>.</p>
 
-<p>The variable that we are analyzing is <code>ENTRIESn_hourly</code> which is not a measure of the <em>entries per hour</em>, instead it measures the number of entries between readings. That gap of time could be 4, 8, 12, 16 or even 20 hours. However, the majority of measures have been made with a gap of time of 4 hours (96%), then with a gap of 8 hours (3,7%) and so on. You can reach more info on the <a href="./notebooks/HoursDifference.ipynb">corresponding Notebook</a>.</p>
+<p>The variable that we are analyzing is <code>ENTRIESn_hourly</code> which is not a measure of the <em>entries per hour</em>, instead it measures the number of entries between readings. That gap of time could be 4, 8, 12, 16 or even 20 hours. However, the majority of measures have been made with a gap of time of 4 hours (96%), then with a gap of 8 hours (3,7%) and so on. You can reach more info on the <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/blob/master/notebooks/HoursDifference.ipynb">corresponding Notebook</a>.</p>
 
 <p>We want to analyze wether or not the entries varies depending on if it is raining or not. We can plot an histogram of the entries per hour, differentiating for both situations:</p>
 
@@ -124,7 +124,7 @@
 
 <p>Given these parameters, we conduct the Mann-Whitney U test and we get a <strong>p-value = 5.48e-06</strong>, which is clearly lower than the critical value, so we would <strong>reject the null hypothesis</strong>. That means that <strong>more people ride the subway in New York City when it is raining than it is not raining</strong> (in other words, it is not likely due to chance to get this difference between the two data).</p>
 
-<p><strong>NOTE:</strong> The associated IPython notebook could be found <a href="./notebooks/StatisticalTest.ipynb">here</a>. Here we can also see that if we split the data differentiating between different stations and we conduct the statistical test for each of them, we will not reject the null for each of the station, indeed, we would only say that in one of the stations significantly more people ride the subway when it is raining.</p>
+<p><strong>NOTE:</strong> The associated IPython notebook could be found <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/blob/master/notebooks/StatisticalTest.ipynb">here</a>. Here we can also see that if we split the data differentiating between different stations and we conduct the statistical test for each of them, we will not reject the null for each of the station, indeed, we would only say that in one of the stations significantly more people ride the subway when it is raining.</p>
 
 <h2>
 <a id="3-linear-regression" class="anchor" href="#3-linear-regression" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 Linear Regression</h2>
@@ -154,7 +154,7 @@
 
 <p>In the case of the <em>dummy</em> variables, there is a high difference between the passengers for different stations, which produces a high dispersion in the <em>scatter plot</em> if we do not desegregate this data for different stations (or units). The reason to add another <em>dummy</em> variable for <code>conds</code> is based on the analysis of the R2 value obtained (which is better with the variable that without it).</p>
 
-<p>There are three different Notebooks that have been used for the variable analysis, which can be reached <a href="./notebooks/reg1.ipynb">here</a>, <a href="./notebooks/reg2.ipynb">here</a> and <a href="./notebooks/reg3.ipynb">here</a>.</p>
+<p>There are three different Notebooks that have been used for the variable analysis, which can be reached <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/blob/master/notebooks/reg1.ipynb">here</a>, <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/blob/master/notebooks/reg2.ipynb">here</a> and <a href="https://github.com/dsaiztc/NYCSubwayAnalysis/blob/master/notebooks/reg3.ipynb">here</a>.</p>
 
 <p><strong>3.1.3 Regression Model</strong></p>
 
